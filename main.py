@@ -76,12 +76,11 @@ def RandomNeighbor(solution):
 
 
 #Quantidade de Itens 
-n = 24
+n = 14
 originalValues = mochilaInicial(n)
 print(originalValues)
 capacity = capacidadeMochila(originalValues)
 print(capacidadeMochila(originalValues))
-
 
 import copy
 def solveKnapsack():
@@ -100,23 +99,24 @@ def solveKnapsack():
     #])
 
     # Definir estados Iniciais - Aleatório
-    #currentSolution = initRandom(originalValues.shape[1])
-    currentSolution = [0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0]
+    currentSolution = [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+    #currentSolution = [1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0]
+
 
     currentValue = calculate_value(currentSolution, originalValues, capacity)
     #print(f"Vetor Inicial: {initialSolution}")
     #print(f"Valor Atual: {currentValue}")
 
     # A melhor solução é a que se tem no momento
-    bestSolution = currentSolution [:]
+    bestSolution = currentSolution[:]
     bestValue = currentValue
 
     # Temperatura inicial
     # Temperatura recebe um valor "aleatório" que vai dimiuindo conforme aumentar o número e iterações
-    temperature = 1000
-    #decreaseFactor = 1
-    decreaseFactor = 0.9
-    stopTemp = 5
+    temperature = 10000
+    decreaseFactor = 1
+    #decreaseFactor = 0.99
+    stopTemp = 9
 
     # Stuck count para "sair" de loops ruins
     # NAO ALTERAR A TEMPERATURA MANUALMENTE!
@@ -137,6 +137,7 @@ def solveKnapsack():
         # Ver Neighbor
         Neighbor = RandomNeighbor(currentSolution)
         valorNeighbor = calculate_value(Neighbor, originalValues, capacity)
+        #print(valorNeighbor)
         
         if valorNeighbor != 0:    
             lastSolution = copy.deepcopy(currentSolution)
@@ -166,19 +167,18 @@ def solveKnapsack():
                 bestValue = currentValue
                 bestSolution = copy.deepcopy(currentSolution)
 
-            temperature = temperature * decreaseFactor
-            #temperature = temperature - decreaseFactor
+            #temperature = temperature * decreaseFactor
+            temperature = temperature - decreaseFactor
             lastTemp = temperature
         else:
             igualZero = igualZero + 1
 
     print(lastAcepted)
-    #print(f"Total de iteracoes validas: {totalIteracoes}")
-    #print(f"Total de iteracoes invalidas: {igualZero}")
-    #print(f"Aceitou o pior: {countPior}")
+    print(f"Total de iteracoes validas: {totalIteracoes}")
+    print(f"Total de iteracoes invalidas: {igualZero}")
+    print(f"Aceitou o pior: {countPior}")
     print(f"random: {lastValueRandom}   lastExp: {lastMath}    lastTemp: {lastTemp}")
     return bestSolution, bestValue, lastSolution, lastTemp
-
 
 bestSolution, bestValue, lastSolution, lastTemp= solveKnapsack()
 print(f'Sao iguais? {checkMatriz(bestSolution,lastSolution)}')
