@@ -3,17 +3,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Parâmetros
-n = 14
-n_geracoes = 100
-tam_populacao = 50
+n = 10
+n_geracoes = 20    
+tam_populacao = 170
 taxa_mutacao = 0.1
 
 # Função para inicializar os valores e pesos dos itens na mochila
 def mochila_inicial(n):
-    # Gerando valores aleatórios para pesos e valores dos itens
-    pesos = np.random.randint(1, 16, size=n)
-    valores = np.random.randint(1, 16, size=n)
-    # Construindo a matriz com pesos e valores
+    pesos = np.random.randint(1, 100, n)
+    valores = np.random.randint(1, 100, n)
     matriz = np.array([pesos, valores])
     return matriz
 
@@ -44,9 +42,8 @@ def selecao_por_roleta(populacao, fitness):
             if(fitness[aptidao] == 0):
                 probabilidades[aptidao] = 0
             else:
-                print(fitness[aptidao], 'fitness')
-                print(fitness[aptidao] / soma_fitness)
                 probabilidades[aptidao] = fitness[aptidao] / soma_fitness
+
     if(np.sum(probabilidades) == 0):
         probabilidades = [1/len(probabilidades) for i in probabilidades]
     pai2_idx = np.random.choice(len(populacao), p=probabilidades)
@@ -81,7 +78,7 @@ def calcula_melhor_individuo(populacao, matriz, capacidade):
     return melhor_individuo
 
 # Função principal do algoritmo genético
-def algoritmo_genetico(matriz, capacidade, n_geracoes=100, tam_populacao=50, taxa_mutacao=0.1):
+def algoritmo_genetico(matriz, capacidade, n_geracoes, tam_populacao, taxa_mutacao):
     populacao = np.random.randint(0, 2, (tam_populacao, matriz.shape[1]))
     historico_fitness = []
 
@@ -109,12 +106,11 @@ melhor_individuo, melhor_fitness, historico_fitness, fitness_ultima_geracao = al
 )
 
 # Exibindo resultados
-print("Melhor combinação de itens da última geração:", melhor_individuo)
-print("Valor máximo encontrado:", melhor_fitness)
+print("Matriz de pesos e valores dos itens:", matriz)
+print("capacidade",capacidade)
+
 peso_total = np.sum(melhor_individuo * matriz[0])
 valor_total = np.sum(melhor_individuo * matriz[1])
-print("Peso total do melhor valor da última geração:", peso_total)
-print("Valor total do melhor valor da última geração:", valor_total)
 
 plt.figure(figsize=(12, 6))
 plt.plot(historico_fitness, label="Melhor valor fitness ao longo das gerações")
