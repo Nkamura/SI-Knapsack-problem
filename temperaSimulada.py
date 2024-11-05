@@ -37,13 +37,11 @@ def checkMatriz(matriz1, matriz2):
     # Verifica se as duas matrizes são exatamente iguais
     return np.array_equal(matriz1, matriz2)
 
-
 # Fornecer uma opção randomica de itens que estariam inseridos nessa primeira lista de solução
 def initRandom(size):
     # 100% random! 
     randomVector = np.random.choice([0, 1], size=size)
     return randomVector
-
 
 import random
 import math
@@ -66,7 +64,6 @@ def calculate_value(solution, original, capacity):
                 return 0
     return total_value
 
-
 def RandomNeighbor(solution):
     # [:] é utilizado para criar uma cópia sem referenciar o mesmo espaço de memória
     # já que, se for apontando os 2 para o mesmo lugar, se eu alterar altera ambos - PARA VETORES
@@ -78,14 +75,12 @@ def RandomNeighbor(solution):
     return tempSolution
 
 
-
 #Quantidade de Itens 
 n = 10
 originalValues = mochilaInicial(n)
 print(originalValues)
 capacity = capacidadeMochila(originalValues)
 print(capacidadeMochila(originalValues))
-
 
 import copy
 def solveKnapsackStaticInit():
@@ -118,10 +113,11 @@ def solveKnapsackStaticInit():
 
     # Temperatura inicial
     # Temperatura recebe um valor "aleatório" que vai dimiuindo conforme aumentar o número e iterações
-    temperature = 10000
+    temperature = 1000
     #decreaseFactor = 1
-    decreaseFactor = 0.9995
+    decreaseFactor = 0.99
     stopTemp = 0.1
+
 
     # Stuck count para "sair" de loops ruins
     # NAO ALTERAR A TEMPERATURA MANUALMENTE!
@@ -186,7 +182,6 @@ def solveKnapsackStaticInit():
     #lastSolution = currentValue
     lastSolution = copy.deepcopy(currentSolution)
     return bestSolution, bestValue, lastSolution
-
 
 
 def solveKnapsackRandomInit():
@@ -280,14 +275,13 @@ def solveKnapsackRandomInit():
             igualZero = igualZero + 1
 
     #print(lastAcepted)
-    #print(f"Total de iteracoes validas: {totalIteracoes}")
+    print(f"Total de iteracoes validas: {totalIteracoes}")
     #print(f"Total de iteracoes invalidas: {igualZero}")
     #print(f"Aceitou o pior: {countPior}")
     #print(f"random: {lastValueRandom}   lastExp: {lastMath}    lastTemp: {lastTemp}")
     #lastSolution = currentValue
     lastSolution = copy.deepcopy(currentSolution)
     return bestSolution, bestValue, lastSolution
-
 
 bestSolution, bestValue, lastSolution= solveKnapsackRandomInit()
 print(f'Sao iguais? {checkMatriz(bestSolution,lastSolution)}')
@@ -345,7 +339,7 @@ plt.subplot(2, 1, 2)
 bars_last = plt.bar(unique_last_values, last_counts, width=1, edgecolor='black', align='center')
 plt.xlabel('Valores da Last Solution')
 plt.ylabel('Contagem de Execuções')
-plt.title(f'Distribuição dos Valores da Last Solution em {num_iterations} Execuções')
+plt.title(f'Distribuição dos Valores da Last Solution em {num_iterations} Execuções - iteração total = 917')
 plt.xticks(np.arange(min(unique_last_values), max(unique_last_values) + 1, 1))
 plt.grid(axis='y')
 
@@ -370,20 +364,19 @@ import math
 import copy
 import matplotlib.pyplot as plt
 
-# Cria a pasta SolutionsGraphs caso ela não exista
 output_folder = 'SolutionsGraphs'
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
 results = []
-last_solution_values = []  # Lista para armazenar os valores da lastSolution
-num_iterations = 500  # Número de execuções
+last_solution_values = []
+num_iterations = 500 
 
 for i in range(num_iterations):
     bestSolution, bestValue, lastSolution = solveKnapsackRandomInit()
     results.append(bestValue)
-    total_last_value = calculate_value(lastSolution, originalValues, capacity)  # Calcula o valor total da lastSolution
-    last_solution_values.append(total_last_value)  # Armazena o valor total da lastSolution
+    total_last_value = calculate_value(lastSolution, originalValues, capacity)
+    last_solution_values.append(total_last_value)
 
 # Gráfico 1: Distribuição dos Melhores Valores
 unique_values, counts = np.unique(results, return_counts=True)
@@ -395,37 +388,74 @@ plt.subplot(2, 1, 1)  # 2 linhas, 1 coluna, gráfico 1
 bars = plt.bar(unique_values, counts, width=1, edgecolor='black', align='center')
 plt.xlabel('Valores')
 plt.ylabel('Contagem de Execuções')
-plt.title(f'Distribuição dos Melhores Valores em {num_iterations} Execuções - Início Randômico')
-plt.xticks(np.arange(min(unique_values), max(unique_values) + 1, 1))  # Eixo X de 1 em 1
-plt.grid(axis='y')  # Grade para facilitar a visualização
+plt.title(f'Distribuição dos Melhores Valores em {num_iterations} Execuções - Início Randomico')
+plt.xticks(np.arange(min(unique_values), max(unique_values) + 1, 1))  
+plt.grid(axis='y')
 
 # Adicionar linhas pontilhadas nos valores do eixo Y
 for i in range(len(counts)):
-    plt.axhline(y=counts[i], color='red', linestyle='--', linewidth=0.7)  # Linha pontilhada
-    plt.text(unique_values[i], counts[i] + 1, str(counts[i]), ha='center', va='bottom')  # Adiciona o valor em cima da barra
+    plt.axhline(y=counts[i], color='red', linestyle='--', linewidth=0.7) 
+    plt.text(unique_values[i], counts[i] + 1, str(counts[i]), ha='center', va='bottom') 
 
 # Gráfico 2: Distribuição dos Valores da Last Solution
 unique_last_values, last_counts = np.unique(last_solution_values, return_counts=True)
 
 # Gráfico 2: Last Solution
-plt.subplot(2, 1, 2)  # 2 linhas, 1 coluna, gráfico 2
+plt.subplot(2, 1, 2)
 bars_last = plt.bar(unique_last_values, last_counts, width=1, edgecolor='black', align='center')
 plt.xlabel('Valores da Last Solution')
 plt.ylabel('Contagem de Execuções')
-plt.title(f'Distribuição dos Valores da Last Solution em {num_iterations} Execuções')
-plt.xticks(np.arange(min(unique_last_values), max(unique_last_values) + 1, 1))  # Eixo X de 1 em 1
-plt.grid(axis='y')  # Grade para facilitar a visualização
+plt.title(f'Distribuição dos Valores da Last Solution em {num_iterations} Execuções - iteração total = 917')
+plt.xticks(np.arange(min(unique_last_values), max(unique_last_values) + 1, 1))
+plt.grid(axis='y')
 
-# Adicionar linhas pontilhadas nos valores do eixo Y
+# Linhas pontilhadas
 for i in range(len(last_counts)):
-    plt.axhline(y=last_counts[i], color='red', linestyle='--', linewidth=0.7)  # Linha pontilhada
-    plt.text(unique_last_values[i], last_counts[i] + 1, str(last_counts[i]), ha='center', va='bottom')  # Valor em cima da barra
+    plt.axhline(y=last_counts[i], color='red', linestyle='--', linewidth=0.7)
+    plt.text(unique_last_values[i], last_counts[i] + 1, str(last_counts[i]), ha='center', va='bottom')
 
-# Ajustar layout
 plt.tight_layout()
 
 # Salvar o gráfico na pasta SolutionsGraphs em formato JPG
-output_path = os.path.join(output_folder, "Distribuicao_Valores_Init_Random.jpg")
+output_path = os.path.join(output_folder, "Distribuicao_Valores_Random_Static.jpg")
 plt.savefig(output_path, format='jpg')
 
 plt.show()
+
+
+import os
+import matplotlib.pyplot as plt
+
+def plot_temperature(temperature, decrease_factor, stop_temp, max_iterations=917):
+    temperatures = []
+    current_temperature = temperature
+    iteration = 0
+
+    while current_temperature > stop_temp and iteration < max_iterations:
+        temperatures.append(current_temperature)
+        current_temperature *= decrease_factor
+        #current_temperature = current_temperature - decrease_factor
+        iteration += 1
+
+    # Gerar o gráfico de temperatura
+    plt.figure(figsize=(10, 5))
+    plt.plot(temperatures, label="Temperatura")
+    plt.xlabel("Iteração")
+    plt.ylabel("Temperatura")
+    plt.title("Decaimento da Temperatura ao Longo das Iterações")
+    plt.grid(True)
+    plt.legend()
+
+    os.makedirs("SolutionsGraphs", exist_ok=True)
+    
+    output_path = os.path.join("SolutionsGraphs", "temperature_decay.png")
+    plt.savefig(output_path)
+    plt.show()
+
+# Parâmetros de exemplo
+initial_temperature = 1000
+stop_temperature = 0.1
+decrease_factor = 0.99
+
+plot_temperature(initial_temperature, decrease_factor, stop_temperature)
+
